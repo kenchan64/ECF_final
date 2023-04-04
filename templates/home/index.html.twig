@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Au Quai Antique{% endblock %}
+
+{% block body %}
+
+<div>
+    <p>"Installé à Chambery, vous propose au déjeuner comme au dîner une
+        expérience gastronomique, à travers une cuisine sans artifice."</p>
+</div>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">ACCUEIL</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarScroll">
+                <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">LA CARTE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">RESERVER</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">SE CONNECTER</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">INSCRIPTION</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <h1>Au Quai Antique</h1>
+    <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="true">
+        <div class="carousel-inner mx-auto w-33">
+            <div class="carousel-item active">
+                <img src="https://static.everypixel.com/ep-pixabay/0198/7967/2183/04479/1987967218304479012-dinner.jpg" class="d-block w-100 img-fluid" alt="salade" title="Salade">
+                </div>
+            </div>
+            <div class="carousel-item mx-auto w-33">
+                <img src="https://cdn.pixabay.com/photo/2019/12/20/18/47/grill-4709068_960_720.jpg" class="d-block w-100 img-fluid" alt="dorade" title="dorade">
+            </div>
+            <div class="carousel-item mx-auto w-33">
+                <img src="https://images.pexels.com/photos/769273/pexels-photo-769273.jpeg?w=1200&h=627&fit=crop&auto=compress&cs=tinysrgb" class="d-block w-100 img-fluid" alt="côte de boeuf" title="côte de boeuf">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    <footer>
+        <p>Ouvert du lundi au vendredi de 12h à 14h et de 19h
+            à 22h. Le samedi soir de 19h à 23h, et le dimanche de 12h à 14h.</p>
+    </footer>
+{% endblock %}
