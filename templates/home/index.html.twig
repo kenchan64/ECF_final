@@ -4,10 +4,10 @@
 
 {% block body %}
 
-<div>
+<header>
     <p>"Installé à Chambery, vous propose au déjeuner comme au dîner une
         expérience gastronomique, à travers une cuisine sans artifice."</p>
-</div>
+</header>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">ACCUEIL</a>
@@ -33,17 +33,16 @@
         </div>
     </nav>
     <h1>Au Quai Antique</h1>
-    <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="true">
-        <div class="carousel-inner mx-auto w-33">
+    <div id="carouselExampleControlsNoTouching" class="carousel slide img-fluid mx-auto w-50" data-bs-touch="true">
+        <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="https://static.everypixel.com/ep-pixabay/0198/7967/2183/04479/1987967218304479012-dinner.jpg" class="d-block w-100 img-fluid" alt="salade" title="Salade">
-                </div>
+                <img src="https://static.everypixel.com/ep-pixabay/0198/7967/2183/04479/1987967218304479012-dinner.jpg" class="d-block w-100 h-100 img-fluid rounded" style="max-height: 500px;" alt="salade" title="Salade">
             </div>
-            <div class="carousel-item mx-auto w-33">
-                <img src="https://cdn.pixabay.com/photo/2019/12/20/18/47/grill-4709068_960_720.jpg" class="d-block w-100 img-fluid" alt="dorade" title="dorade">
+            <div class="carousel-item">
+                <img src="https://cdn.pixabay.com/photo/2019/12/20/18/47/grill-4709068_960_720.jpg" class="d-block w-100 h-100 img-fluid rounded" style="max-height: 500px;" alt="dorade" title="dorade">
             </div>
-            <div class="carousel-item mx-auto w-33">
-                <img src="https://images.pexels.com/photos/769273/pexels-photo-769273.jpeg?w=1200&h=627&fit=crop&auto=compress&cs=tinysrgb" class="d-block w-100 img-fluid" alt="côte de boeuf" title="côte de boeuf">
+            <div class="carousel-item">
+                <img src="https://images.pexels.com/photos/769273/pexels-photo-769273.jpeg?w=1200&h=627&fit=crop&auto=compress&cs=tinysrgb" class="d-block w-100 h-100 img-fluid rounded" style="max-height: 500px;" alt="côte de boeuf" title="côte de boeuf">
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching" data-bs-slide="prev">
@@ -54,6 +53,10 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
+    </div>
+<div class="d-grid gap-2 col-6 mx-auto mt-5">
+    <button class="btn btn-success" type="button">Button</button>
+</div>
     <footer>
         <p>Ouvert du lundi au vendredi de 12h à 14h et de 19h
             à 22h. Le samedi soir de 19h à 23h, et le dimanche de 12h à 14h.</p>
