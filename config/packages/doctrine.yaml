@@ -1,5 +1,7 @@
 doctrine:
     dbal:
+        driver: 'pdo_mysql'
+        server_version: '10.6.7-mariadb'
         url: '%env(resolve:DATABASE_URL)%'
 
         # IMPORTANT: You MUST configure your server version,
