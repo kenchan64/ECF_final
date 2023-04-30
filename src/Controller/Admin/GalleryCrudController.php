@@ -4,6 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\Gallery;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class GalleryCrudController extends AbstractCrudController
 {
@@ -12,14 +15,12 @@ class GalleryCrudController extends AbstractCrudController
         return Gallery::class;
     }
 
-    /*
+
     public function configureFields(string $pageName): iterable
     {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
+        //yield from parent::configureFields($pageName);
+        yield TextField::new('title');
+        yield TextareaField::new('imageFile')->setFormType(VichImageType::class);
     }
-    */
+
 }
