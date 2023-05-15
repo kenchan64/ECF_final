@@ -1,12 +1,23 @@
 <div class="text-center mt-5">
     <h1 class="mb-4">Nos Horaires d'ouverture</h1>
-<ul class="list-unstyled">
-    <li>Lundi 12h00-14h00<br>19h00-22h00</li><br>
-    <li>Mardi 12h00-14h00<br>19h00-22h00</li><br>
-    <li>Mercredi fermé</li><br>
-    <li>Jeudi 12h00-14h00<br>19h00-22h00</li><br>
-    <li>Vendredi 12h00-14h00<br>19h00-22h00</li><br>
-    <li>Samedi 19h00-23h00</li><br>
-    <li>Dimanche 12h00-14h00</li><br>
-</ul>
+
+    {% for openingHour in openingHours %}
+        {% if not openingHour.closed %}
+            <ul class="list-unstyled ">
+                <li><strong>{{ openingHour.day }}</strong> :
+                    {% if openingHour.middayOpen %}
+                        {{ openingHour.middayOpen|date('H:i') }} - {{ openingHour.middayClose|date('H:i') }}<br>
+                    {% endif %}
+                    {% if openingHour.eveningOpen %}
+                        {{ openingHour.eveningOpen|date('H:i') }} - {{ openingHour.eveningClose|date('H:i') }}<br>
+                    {% endif %}
+                </li>
+            </ul>
+        {% else %}
+            <ul class="list-unstyled">
+                <li><strong>{{ openingHour.day }}</strong> : fermé</li>
+            </ul>
+        {% endif %}
+    {% endfor %}
+
 </div>

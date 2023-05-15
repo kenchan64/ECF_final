@@ -48,5 +48,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Menu', 'fa-solid fa-receipt', Menu::class);
         yield MenuItem::linkToCrud('MenuCard', 'fas fa-list', MenuCard::class);
         yield MenuItem::linkToCrud('OpeningHours', 'fa-regular fa-clock', OpeningHours::class);
+        yield MenuItem::linkToUrl('Home', 'fa-solid fa-house', $this->generateUrl('home'));
+        $maximumPlaces = 55;
+        yield MenuItem::section('Places Maximums: ' . $maximumPlaces);
     }
 }

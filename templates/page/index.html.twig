@@ -1,14 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PageController!{% endblock %}
+{% block title %}Carte{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="text-center mt-5 mb-5">
+    <h1>Carte</h1>
+    <div id="card-menu" class="text-center mt-5 mb-5">
+        {% for menuCards in carte %}
+            <h3 class="mt-5">{{ menuCards.category }}</h3>
+            <h5>{{ menuCards.title }}</h5>
+            <p>{{ menuCards.description }}</p>
+            {{ menuCards.price }} Euros.
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

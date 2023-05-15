@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Gallery;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Vich\UploaderBundle\Form\Type\VichImageType;
@@ -20,7 +21,8 @@ class GalleryCrudController extends AbstractCrudController
     {
         //yield from parent::configureFields($pageName);
         yield TextField::new('title');
-        yield TextareaField::new('imageFile')->setFormType(VichImageType::class);
+        yield TextareaField::new('imageFile')->setFormType(VichImageType::class)->hideOnIndex();
+        yield ImageField::new('imageName')->setBasePath('/images/gallery')->hideOnForm();
     }
 
 }
