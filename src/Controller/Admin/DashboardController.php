@@ -6,6 +6,7 @@ use App\Entity\Gallery;
 use App\Entity\Menu;
 use App\Entity\MenuCard;
 use App\Entity\OpeningHours;
+use App\Entity\RestaurantSettings;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -17,23 +18,10 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        //return parent::index();
-
-        // Option 1. You can make your dashboard redirect to some common page of your backend
-        //
-        // $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        // return $this->redirect($adminUrlGenerator->setController(OneOfYourCrudController::class)->generateUrl());
-
-        // Option 2. You can make your dashboard redirect to different pages depending on the user
-        //
-        // if ('jane' === $this->getUser()->getUsername()) {
-        //     return $this->redirect('...');
-        // }
-
-        // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
-        // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
-        //
-        return $this->render('admin/dashboard.html.twig');
+        $placesMaximum = 55;
+        return $this->render('admin/dashboard.html.twig', [
+        'placesMaximum' => $placesMaximum,
+        ]);
     }
 
     public function configureDashboard(): Dashboard
@@ -48,8 +36,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Menu', 'fa-solid fa-receipt', Menu::class);
         yield MenuItem::linkToCrud('MenuCard', 'fas fa-list', MenuCard::class);
         yield MenuItem::linkToCrud('OpeningHours', 'fa-regular fa-clock', OpeningHours::class);
+        yield MenuItem::linkToCrud('RestaurantSettings', 'fas fa-cog', RestaurantSettings::class);
+        yield MenuItem::linkToUrl('Reservations', 'fas fa-book', $this->generateUrl('app_reservation_show'));
         yield MenuItem::linkToUrl('Home', 'fa-solid fa-house', $this->generateUrl('home'));
-        $maximumPlaces = 55;
-        yield MenuItem::section('Places Maximums: ' . $maximumPlaces);
     }
 }
