@@ -1,5 +1,6 @@
+<footer>
 <div class="text-center mt-5">
-    <h1 class="mb-4">Nos Horaires d'ouverture</h1>
+    <h1 class="underline-title mt-3 mb-4">Nos Horaires d'ouverture</h1>
 
     {% for openingHour in openingHours %}
         {% if not openingHour.closed %}
@@ -19,5 +20,5 @@
             </ul>
         {% endif %}
     {% endfor %}
-
 </div>
+</footer>

@@ -42,7 +42,7 @@ class ReservationType extends AbstractType
             ])
             ->add('allergies', TextareaType::class, [
                 'required' => false,
-                'label' => 'Mentions des allergies (optionnel)',
+                'label' => 'Mention des allergies (optionnel)',
             ]);
     }
 

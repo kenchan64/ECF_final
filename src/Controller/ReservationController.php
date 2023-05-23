@@ -53,12 +53,13 @@ class ReservationController extends AbstractController
         $openingHours = $this->openingHoursRepository->findAll();
         $reservation = new Reservation();
         $form = $this->createForm(ReservationType::class, $reservation);
+        $restaurantSettings = $this->restaurantSettingsRepository->findOneBy([]);
+        $reservation->setRestaurantSettings($restaurantSettings);
 
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $totalGuestsForTime = $this->reservationRepository->getTotalGuestsForTime($reservation->getHeure(), $reservation->getDate());
-            $restaurantSettings = $this->restaurantSettingsRepository->findOneBy([]);
             $maxGuests = $restaurantSettings ? $restaurantSettings->getMaxGuests() : 0;
 
             if ($reservation->getNbCouverts() + $totalGuestsForTime > $maxGuests) {
@@ -83,7 +84,7 @@ class ReservationController extends AbstractController
             'available' => $availability['available'] ?? false,
             'isAvailable' => $availability['isAvailable'] ?? false,
             'remainingSeats' => $availability['remainingSeats'] ?? 0,
-
+            'reservation' => $reservation,
         ]);
     }
 
@@ -117,6 +118,7 @@ class ReservationController extends AbstractController
     #[Route('/reservation/{id}/delete', name: 'reservation_delete', methods: ['DELETE'])]
     public function delete(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted(('ROLE_ADMIN'));
         // Check if the request method is DELETE or POST
         if (!$request->isMethod('DELETE') && !$request->isMethod('POST')) {
             throw $this->createAccessDeniedException('Invalid request method.');

@@ -39,8 +39,8 @@ class ReservationRepository extends ServiceEntityRepository
         FROM App\Entity\Reservation r
         WHERE r.heure = :heure
         AND r.date = :date'
-        )->setParameter('heure', $heure)
-            ->setParameter('date', $date);
+        )->setParameter('heure', $heure->format('H:i:s'))
+            ->setParameter('date', $date->format('Y-m-d'));
 
         try {
             $result = $query->getSingleScalarResult();

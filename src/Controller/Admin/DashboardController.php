@@ -18,10 +18,7 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
-        $placesMaximum = 55;
-        return $this->render('admin/dashboard.html.twig', [
-        'placesMaximum' => $placesMaximum,
-        ]);
+        return $this->render('admin/dashboard.html.twig');
     }
 
     public function configureDashboard(): Dashboard

@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\MenuCard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class MenuCardCrudController extends AbstractCrudController
@@ -12,14 +13,9 @@ class MenuCardCrudController extends AbstractCrudController
         return MenuCard::class;
     }
 
-    /*
-    public function configureFields(string $pageName): iterable
+    public function configureCrud(Crud $crud): Crud
     {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
+        return $crud
+            ->setPageTitle(Crud::PAGE_INDEX, 'Carte');
     }
-    */
 }

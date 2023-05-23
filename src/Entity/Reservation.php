@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\RestaurantSettings;
+use App\Repository\RestaurantSettingsRepository;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
@@ -25,6 +27,16 @@ class Reservation
 
     #[ORM\Column(name: 'allergies', type: Types::TEXT, nullable: true)]
     private ?string $allergies = null;
+
+    #[ORM\ManyToOne(targetEntity: RestaurantSettings::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(name: "restaurant_settings_id", referencedColumnName: "id")]
+
+    private ?RestaurantSettings $restaurantSettings;
+
+    public function __construct()
+    {
+        $this->restaurantSettings = new RestaurantSettings();
+    }
 
 
     public function getId(): ?int
@@ -80,4 +92,14 @@ class Reservation
         return $this;
     }
 
+    public function getRestaurantSettings(): ?RestaurantSettings
+    {
+        return $this->restaurantSettings;
+    }
+
+    public function setRestaurantSettings(?RestaurantSettings $restaurantSettings): self
+    {
+        $this->restaurantSettings = $restaurantSettings;
+        return $this;
+    }
 }
