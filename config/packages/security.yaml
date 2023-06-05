@@ -7,6 +7,11 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
+                class: App\Entity\User
+                property: email
+
+        app_admin_provider:
+            entity:
                 class: App\Entity\Admin
                 property: email
 
@@ -21,6 +26,9 @@ security:
             custom_authenticator: App\Security\AppCustomAuthenticator
             logout:
                 path: app_logout
+
+        admin:
+            provider: app_admin_provider
                 # where to redirect after logout
                 # target: app_any_route
 
