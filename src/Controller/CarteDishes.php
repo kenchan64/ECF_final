@@ -12,7 +12,7 @@ class CarteDishes extends AbstractController
 {
 
 
-    #[Route('/carte', name: 'app_page')]
+    #[Route('/carte', name: 'app_page', methods: ['GET'])]
     public function index(): Response
     {
         $menuCards = $this->menuCardRepository->findAll();

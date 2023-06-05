@@ -35,7 +35,7 @@ class ReservationController extends AbstractController
         $this->restaurantSettingsRepository = $restaurantSettingsRepository;
     }
 
-    #[Route('/reservations', name: 'app_reservation_show')]
+    #[Route('/reservations', name: 'app_reservation_show', methods: ['GET'])]
     public function showAllReservations(): Response
     {
         $reservations = $this->reservationRepository->findAll();
@@ -47,7 +47,7 @@ class ReservationController extends AbstractController
         ]);
     }
 
-    #[Route('/reservation', name: 'app_reservation')]
+    #[Route('/reservation', name: 'app_reservation', methods: ['GET', 'POST'])]
     public function index(Request $request): Response
     {
         $openingHours = $this->openingHoursRepository->findAll();
@@ -137,7 +137,7 @@ class ReservationController extends AbstractController
         return $this->redirectToRoute('app_reservation_show');
     }
 
-    private function calculateRemainingSeats($heure, $date): int
+    private function calculateRemainingSeats(\DateTime $heure, \DateTime $date): int
     {
         $restaurantSettings = $this->restaurantSettingsRepository->findOneBy([]);
         $maxGuests = $restaurantSettings ? $restaurantSettings->getMaxGuests() : 0;
@@ -151,7 +151,7 @@ class ReservationController extends AbstractController
         }
     }
 
-    private function isReservationAvailable(int $nbCouverts, $heure, $date): bool
+    private function isReservationAvailable(int $nbCouverts, \DateTime $heure, \DateTime $date): bool
     {
         $restaurantSettings = $this->restaurantSettingsRepository->findOneBy([]);
         $maxGuests = $restaurantSettings ? $restaurantSettings->getMaxGuests() : 0;
@@ -164,7 +164,7 @@ class ReservationController extends AbstractController
         }
     }
 
-    private function checkAvailabilityChanged($nbCouverts, $heure, $date): bool
+    private function checkAvailabilityChanged(int $nbCouverts, \DateTime $heure, \DateTime $date): bool
     {
         $isAvailable = $this->isReservationAvailable($nbCouverts, $heure, $date);
         $availabilityChanged = $isAvailable !== $this->previousAvailability;

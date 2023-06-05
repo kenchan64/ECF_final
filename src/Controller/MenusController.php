@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class MenusController extends AbstractController
 {
 
-    #[Route('/menus', name: 'app_menus')]
+    #[Route('/menus', name: 'app_menus', methods: ['GET'])]
     public function index(): Response
     {
         $menus = $this->menuRepository->findAll();

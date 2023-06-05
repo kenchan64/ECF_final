@@ -61,7 +61,7 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
         return new Passport(
             new UserBadge($email, function () use ($user) {
-                return $user;
+                return $this->createAccount($user);
             }),
             new PasswordCredentials($request->request->get('password', '')),
             [

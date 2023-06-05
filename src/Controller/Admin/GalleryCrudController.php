@@ -19,7 +19,6 @@ class GalleryCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        //yield from parent::configureFields($pageName);
         yield TextField::new('title');
         yield TextareaField::new('imageFile')->setFormType(VichImageType::class)->hideOnIndex();
         yield ImageField::new('imageName')->setBasePath('/images/gallery')->hideOnForm();

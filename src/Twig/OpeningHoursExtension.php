@@ -2,6 +2,7 @@
 
 namespace App\Twig;
 
+use App\Entity\OpeningHours;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigTest;
 
@@ -14,7 +15,7 @@ class OpeningHoursExtension extends AbstractExtension
         ];
     }
 
-    public function isOpeningHours($openingHours)
+    public function isOpeningHours(OpeningHours $openingHours): bool
     {
         return $openingHours->isClosed();
     }

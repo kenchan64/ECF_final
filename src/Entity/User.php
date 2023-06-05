@@ -5,11 +5,12 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User extends Request implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -83,22 +84,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        // You can hardcode roles if they are not dynamic, or retrieve them from your database if they are.
-        // It should return an array of roles, e.g., ['ROLE_USER']
         return ['ROLE_USER'];
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
-        // If you are using bcrypt or argon for hashing, you don't need a real salt
-        // Return null or a string
         return null;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        // If any sensitive information is stored in your User object, clear it here
-        // If not, you can leave this method empty
+
     }
 
     public function getUserIdentifier(): string
