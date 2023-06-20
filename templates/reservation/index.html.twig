@@ -34,6 +34,7 @@
     <input type="hidden" id="available" value="{{ available ? 'true' : 'false' }}" />
     <input type="hidden" id="remaining-seats" value="{{ remainingSeats|default('0') }}" />
     <input type="hidden" id="availability-changed" value="{{ availabilityChanged|default('0') }}" />
+        <input type="hidden" id="reservationId" value="{{ reservationId }}">
     {{ form_end(form) }}
     </div>
 
@@ -46,9 +47,14 @@
 
             // Effectuez votre vérification ici
             // Si la vérification échoue, vous pouvez afficher un message d'erreur ou effectuer une autre action
-            const nbCouverts = document.getElementById('reservation_nbCouverts').value;
-            const heure = document.getElementById('reservation_heure').value;
-            const date = document.getElementById('reservation_date').value;
+            const queryParams = new URLSearchParams(window.location.search);
+            const nbCouverts = queryParams.get('nbCouverts');
+            const heure = queryParams.get('heure');
+            const date = queryParams.get('date');
+
+            // Mettre à jour l'URL avec les paramètres du formulaire
+            const newUrl = window.location.pathname + '?' + queryParams.toString();
+            history.pushState(null, '', newUrl);
 
             if (heure === '' || date === '' || nbCouverts === '') {
                 // Afficher un message d'erreur ou effectuer une autre action
@@ -63,18 +69,21 @@
         // Fonction pour vérifier la disponibilité des places en utilisant AJAX
         function checkAvailability() {
 
-            const nbCouverts = document.getElementById('reservation_nbCouverts').value;
-            const heure = document.getElementById('reservation_heure').value;
-            const date = document.getElementById('reservation_date').value;
+            const queryParams = new URLSearchParams(window.location.search);
+            const nbCouverts = queryParams.get('nbCouverts');
+            const heure = queryParams.get('heure');
+            const date = queryParams.get('date');
+            const reservationId = queryParams.get('reservationId');
             const availableInput = document.getElementById('available');
             const available = availableInput.value;
 
             // Effectuer l'appel AJAX
-            const url = '{{ path('app_reservation_check_availability') }}';
+            const url = '{{ path('app_reservation_check_availability', {'reservationId': reservationId}) }}';
             const data = {
                 'nbCouverts': nbCouverts,
                 'heure': heure,
                 'date': date,
+                'reservationId': reservationId,
                 'available': available
             };
 
@@ -83,7 +92,13 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify({
+                    'nbCouverts': nbCouverts,
+                    'heure': heure,
+                    'date': date,
+                    'available': available,
+                    'reservationId': reservationId,
+                }),
             })
                 .then(response => response.json())
                 .then(data => {

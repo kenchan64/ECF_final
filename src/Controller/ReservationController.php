@@ -23,6 +23,7 @@ class ReservationController extends AbstractController
     private RestaurantSettingsRepository $restaurantSettingsRepository;
 
     private bool $previousAvailability = false;
+    private ?int $reservationId = null;
 
     public function __construct(
         OpeningHoursRepository       $openingHoursRepository,
@@ -55,11 +56,19 @@ class ReservationController extends AbstractController
         $form = $this->createForm(ReservationType::class, $reservation);
         $restaurantSettings = $this->restaurantSettingsRepository->findOneBy([]);
         $reservation->setRestaurantSettings($restaurantSettings);
+        $reservationId = $reservation->getId();
+
+        // Pré-remplir les champs du formulaire si le visiteur est connecté
+        if ($this->getUser() !== null) {
+            $user = $this->getUser();
+            $form->get('nbCouverts')->setData($user->getDefaultGuests());
+            $form->get('allergies')->setData($user->getAllergies());
+        }
 
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $totalGuestsForTime = $this->reservationRepository->getTotalGuestsForTime($reservation->getHeure(), $reservation->getDate());
+            $totalGuestsForTime = $this->reservationRepository->findReservationIdByCriteria($reservation->getHeure(), $reservation->getDate());
             $maxGuests = $restaurantSettings ? $restaurantSettings->getMaxGuests() : 0;
 
             if ($reservation->getNbCouverts() + $totalGuestsForTime > $maxGuests) {
@@ -69,12 +78,13 @@ class ReservationController extends AbstractController
             }
 
             $this->reservationRepository->save($reservation);
+            $reservationId = $reservation->getId();
 
             return $this->redirectToRoute('home');
         }
 
         // Récupérer la disponibilité à partir de checkAvailability
-        $availability = $this->checkAvailability($request);
+        $availability = $this->checkAvailability($request, $this->reservationId);
         $availability = json_decode($availability, true);
 
         return $this->render('reservation/index.html.twig', [
@@ -85,6 +95,7 @@ class ReservationController extends AbstractController
             'isAvailable' => $availability['isAvailable'] ?? false,
             'remainingSeats' => $availability['remainingSeats'] ?? 0,
             'reservation' => $reservation,
+            'reservationId' => $reservationId,
         ]);
     }
 
@@ -102,14 +113,16 @@ class ReservationController extends AbstractController
             return new JsonResponse(['available' => true, 'remainingSeats' => 0, 'availabilityChanged' => false]);
         }
 
-        $remainingSeats = $this->calculateRemainingSeats($heure, $date);
+        $reservationId =  (int) ($data['reservationId'] ?? null);
+        $remainingSeats = $this->reservationRepository->findReservationIdByCriteria($nbCouverts, $heure, $date);
         $isAvailable = $remainingSeats >= $nbCouverts;
-        $availabilityChanged = $isAvailable;
+        $availabilityChanged = $this->checkAvailabilityChanged($nbCouverts, $heure, $date);
 
         $responseData = [
             'available' => $isAvailable,
             'remainingSeats' => $remainingSeats,
             'availabilityChanged' => $availabilityChanged,
+            'reservationId' => $reservationId,
         ];
 
         return new JsonResponse($responseData);
@@ -143,7 +156,7 @@ class ReservationController extends AbstractController
         $maxGuests = $restaurantSettings ? $restaurantSettings->getMaxGuests() : 0;
 
         if ($heure instanceof DateTime || $heure === null) {
-            $totalGuestsForTime = $this->reservationRepository->getTotalGuestsForTime($heure, $date);
+            $totalGuestsForTime = $this->reservationRepository->findReservationIdByCriteria($heure, $date, $reservationId);
             $remainingSeats = $maxGuests - $totalGuestsForTime;
             return $remainingSeats >= 0 ? $remainingSeats : 0;
         } else {
@@ -157,7 +170,7 @@ class ReservationController extends AbstractController
         $maxGuests = $restaurantSettings ? $restaurantSettings->getMaxGuests() : 0;
 
         if ($heure instanceof DateTime || $heure === null) {
-            $totalGuestsForTime = $this->reservationRepository->getTotalGuestsForTime($heure, $date);
+            $totalGuestsForTime = $this->reservationRepository->findReservationIdByCriteria($heure, $date);
             return $nbCouverts + $totalGuestsForTime <= $maxGuests;
         } else {
             return false;

@@ -3,7 +3,7 @@ controllers:
     type: attribute
 
 app_reservation_check_availability:
-    path: '/reservation/check-availability'
+    path: '/reservation/check-availability/{reservationId}'
     controller: App\Controller\ReservationController::checkAvailability
     methods: [ 'POST' ]
 
@@ -16,3 +16,8 @@ reservation_delete:
     path: '/reservation/{id}/delete'
     controller: App\Controller\ReservationController::delete
     methods: [ 'DELETE', 'POST' ]
+
+app_register:
+    path: '/register'
+    controller: App\Controller\RegistrationController::register
+    methods: [ 'GET', 'POST' ]

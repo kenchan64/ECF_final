@@ -8,6 +8,9 @@ parameters:
 services:
     App\Twig\OpeningHoursExtension:
         tags: [twig.extension]
+
+    App\Repository\ReservationRepository:
+        autowire: true
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

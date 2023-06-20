@@ -10,11 +10,18 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    private OpeningHoursRepository $openingHoursRepository;
+
+    public function __construct(OpeningHoursRepository $openingHoursRepository)
+    {
+        $this->openingHoursRepository = $openingHoursRepository;
+    }
+
     #[Route(path: '/login', name: 'app_login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('target_path');
+            return $this->redirectToRoute('app_reservation');
         }
 
         // get the login error if there is one
@@ -27,16 +34,10 @@ class SecurityController extends AbstractController
             'openingHours' => $openingHours]);
     }
 
-    private OpeningHoursRepository $openingHoursRepository;
-
-    public function __construct(OpeningHoursRepository $openingHoursRepository)
-    {
-        $this->openingHoursRepository = $openingHoursRepository;
-    }
-
     #[Route(path: '/logout', name: 'app_logout', methods: ['GET'])]
-    public function logout(): void
+    public function logout(): Response
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        return $this->redirectToRoute('home');
     }
+
 }

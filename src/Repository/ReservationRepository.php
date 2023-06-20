@@ -3,10 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Reservation;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -32,21 +30,23 @@ class ReservationRepository extends ServiceEntityRepository
         $entityManager->flush();
     }
 
-    public function getTotalGuestsForTime(?DateTime $heure, ?DateTime $date): int
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findReservationIdByCriteria(int $nbCouverts, \DateTimeInterface $heure, \DateTimeInterface $date): ?int
     {
-        $query = $this->getEntityManager()->createQuery(
-            'SELECT SUM(r.nbCouverts)
-        FROM App\Entity\Reservation r
-        WHERE r.heure = :heure
-        AND r.date = :date'
-        )->setParameter('heure', $heure->format('H:i:s'))
-            ->setParameter('date', $date->format('Y-m-d'));
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('r.id')
+            ->where('r.nbCouverts = :nbCouverts')
+            ->andWhere('r.heure = :heure')
+            ->andWhere('r.date = :date')
+            ->setParameter('nbCouverts', $nbCouverts)
+            ->setParameter('heure', $heure)
+            ->setParameter('date', $date)
+            ->setMaxResults(1);
 
-        try {
-            $result = $query->getSingleScalarResult();
-            return $result ?? 0;
-        } catch (NoResultException|NonUniqueResultException) {
-            return 0;
-        }
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result !== null ? $result['id'] : null;
     }
 }

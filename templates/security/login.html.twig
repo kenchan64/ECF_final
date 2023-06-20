@@ -23,18 +23,10 @@
                    class="form-control text-center mx-auto"
                    autocomplete="current-password"
                    required>
-            <label for="inputDefaultGuests" class="text-center">Default Guests</label>
-            <input type="number" style="max-width: 600px;" value="{{ default_guests }}" name="default_guests" id="inputDefaultGuests"
-                   class="form-control mb-3 text-center mx-auto" required>
-
-            <label for="inputAllergies" class="text-center">Allergies</label>
-            <textarea style="max-width: 600px;" name="allergies" id="inputAllergies" class="form-control text-center mx-auto">{{ allergies }}</textarea>
             <input type="hidden" name="_csrf_token"
                    value="{{ csrf_token('authenticate') }}">
             <input type="hidden" name="reservation_form" value="existing_user">
-            <button class="btn btn-lg btn-success mt-4" type="submit">
-                {% if app.user %}Sign in{% else %}Create account{% endif %}
-            </button>
+            <button class="btn btn-lg btn-success mt-4" type="submit">Connection</button>
         </form>
     </div>
 {% endblock %}
