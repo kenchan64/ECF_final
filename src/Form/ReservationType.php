@@ -4,10 +4,9 @@ namespace App\Form;
 
 use App\Entity\Reservation;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
@@ -26,19 +25,16 @@ class ReservationType extends AbstractType
                     new Range(['min' => 1])
                 ]
             ])
-            ->add('date', DateType::class, [
-                'widget' => 'single_text',
-                'data' => null,
+            ->add('date', DateTimeType::class, [
+                'date_widget' => 'single_text',
+                'time_widget' => 'choice',
+                'hours' => range(12, 21),
+                'minutes' => [0, 15, 30, 45],
                 'required' => true,
                 'constraints' => [
                     new NotBlank(),
                     new GreaterThanOrEqual(['value' => 'today'])
                 ]
-            ])
-            ->add('heure', TimeType::class, [
-                'widget' => 'single_text',
-                'hours' => range(12, 21),
-                'minutes' => [0, 15, 30, 45],
             ])
             ->add('allergies', TextareaType::class, [
                 'required' => false,

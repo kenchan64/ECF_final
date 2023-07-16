@@ -8,6 +8,11 @@
         <h5>Installé à Chambery, vous propose au déjeuner comme au dîner une
             expérience gastronomique, à travers une cuisine sans artifice.</h5>
     </div>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success mx-auto text-center mb-5" style="width: 50%;">
+            {{ message }}
+        </div>
+    {% endfor %}
     <div id="gallery" class="carousel slide img-fluid mx-auto rounded w-75"
          data-bs-touch="true">
         <div class="carousel-inner">

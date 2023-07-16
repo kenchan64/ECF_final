@@ -1,0 +1,9 @@
+{# templates/partials/flash_messages.html.twig #}
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}

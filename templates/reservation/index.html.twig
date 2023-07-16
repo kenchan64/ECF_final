@@ -6,130 +6,48 @@
     <div class="text-center">
         <h1 class="mt-5 underline-title">Réservation de table</h1>
         {{ form_start(form, {'method': 'POST', 'attr': {'id': 'my-form'}}) }}
-        {% if app.flashes('danger') is not empty %}
-            <div class="alert alert-danger">
-                {{ app.flashes('danger')[0] }}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-successmx-auto text-center mb-5" style="width: 50%;">
+                {{ message }}
             </div>
-        {% endif %}
+        {% endfor %}
+        {% for message in app.flashes('danger') %}
+            <div class="alert alert-danger mx-auto text-center mt-5" style="width: 50%;">
+                {{ message }}
+            </div>
+        {% endfor %}
         <div class="form-group text-center mx-auto mb-5 mt-5 " style="max-width: 600px;">
             {{ form_label(form.nbCouverts) }}
             {{ form_widget(form.nbCouverts) }}
         </div>
         <div class="form-group text-center mx-auto mb-5 mt-5" style="max-width: 600px;">
-        {{ form_label(form.date) }}
-        {{ form_widget(form.date) }}
+            {{ form_label(form.date) }}
+            {{ form_widget(form.date) }}
+        </div>
+        <div class="form-group text-center mx-auto mb-5 mt-5" style="max-width: 600px;">
+            {{ form_label(form.allergies) }}
+            {{ form_widget(form.allergies) }}
+        </div>
+        <div class="text-center mb-5 mt-5">
+            <button id='reservation_button' type="submit" class="btn btn-success" data-url='/reservation'>Réserver
+            </button>
+        </div>
+        {{ form_end(form) }}
     </div>
-    <div class="form-group text-center mx-auto mb-5 mt-5" style="max-width: 600px;">
-        {{ form_label(form.heure) }}
-        {{ form_widget(form.heure) }}
-    </div>
-    <div class="form-group text-center mx-auto mb-5 mt-5" style="max-width: 600px;">
-        {{ form_label(form.allergies) }}
-        {{ form_widget(form.allergies) }}
-    </div>
-    <div class="text-center mb-5 mt-5">
-        <button id='reservation_button' type="submit" class="btn btn-success">Réserver</button>
-        <div id="availability-message"></div>
-    </div>
-    <input type="hidden" id="available" value="{{ available ? 'true' : 'false' }}" />
-    <input type="hidden" id="remaining-seats" value="{{ remainingSeats|default('0') }}" />
-    <input type="hidden" id="availability-changed" value="{{ availabilityChanged|default('0') }}" />
-        <input type="hidden" id="reservationId" value="{{ reservationId }}">
-    {{ form_end(form) }}
-    </div>
+    {% block scripts %}
+        <script>
+            const form = document.getElementById('my-form');
 
-    <script>
-        const form = document.getElementById('my-form');
-        let initialAvailability = true;
+            form.addEventListener('submit', function (event) {
 
-        form.addEventListener('submit', function (event) {
-            event.preventDefault(); // Annule l'action par défaut de la soumission du formulaire
+                const nbCouverts = document.getElementById('reservation_nbCouverts').value;
+                const date = document.getElementById('reservation_date').value;
 
-            // Effectuez votre vérification ici
-            // Si la vérification échoue, vous pouvez afficher un message d'erreur ou effectuer une autre action
-            const queryParams = new URLSearchParams(window.location.search);
-            const nbCouverts = queryParams.get('nbCouverts');
-            const heure = queryParams.get('heure');
-            const date = queryParams.get('date');
-
-            // Mettre à jour l'URL avec les paramètres du formulaire
-            const newUrl = window.location.pathname + '?' + queryParams.toString();
-            history.pushState(null, '', newUrl);
-
-            if (heure === '' || date === '' || nbCouverts === '') {
-                // Afficher un message d'erreur ou effectuer une autre action
-                // Par exemple, désactiver le bouton de soumission
-                document.getElementById('reservation_button').disabled = true;
-            } else {
-                // Soumettre le formulaire programmatiquement
-                checkAvailability();
-            }
-        });
-
-        // Fonction pour vérifier la disponibilité des places en utilisant AJAX
-        function checkAvailability() {
-
-            const queryParams = new URLSearchParams(window.location.search);
-            const nbCouverts = queryParams.get('nbCouverts');
-            const heure = queryParams.get('heure');
-            const date = queryParams.get('date');
-            const reservationId = queryParams.get('reservationId');
-            const availableInput = document.getElementById('available');
-            const available = availableInput.value;
-
-            // Effectuer l'appel AJAX
-            const url = '{{ path('app_reservation_check_availability', {'reservationId': reservationId}) }}';
-            const data = {
-                'nbCouverts': nbCouverts,
-                'heure': heure,
-                'date': date,
-                'reservationId': reservationId,
-                'available': available
-            };
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    'nbCouverts': nbCouverts,
-                    'heure': heure,
-                    'date': date,
-                    'available': available,
-                    'reservationId': reservationId,
-                }),
-            })
-                .then(response => response.json())
-                .then(data => {
-
-                    // Mise à jour des variables globales avec les nouvelles valeurs de la réponse
-                    const isAvailable = data['available'];
-                    const remainingSeats = data['remainingSeats'];
-                    const availabilityChanged = isAvailable !== initialAvailability;
-                    initialAvailability = isAvailable;
-
-
-                    // Mettre à jour l'affichage en fonction de la disponibilité des places
-                    if (isAvailable && parseInt(remainingSeats) > 0) {
-                        document.getElementById('availability-message').textContent = 'Places disponibles : ' + remainingSeats.toString();
-                        document.getElementById('reservation_button').disabled = false;
-                    } else {
-                        // Places épuisées
-                        document.getElementById('availability-message').textContent = 'Désolé, il n\'y a pas suffisamment de places disponibles à cette heure-là.';
-                        // Désactiver le bouton de réservation si la limite est atteinte
-                        document.getElementById('reservation_button').disabled = true;
-                    }
-
-                    // Rafraîchir la page si la disponibilité a changé
-                    if (availabilityChanged) {
-                        location.reload();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error', error);
-                });
-
-        }
-    </script>
+                if (date === '' || nbCouverts === '') {
+                    event.preventDefault();
+                    document.getElementById('reservation_button').disabled = true;
+                }
+            });
+        </script>
+    {% endblock %}
 {% endblock %}

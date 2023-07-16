@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OpeningHoursRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,16 +19,16 @@ class OpeningHours
     private ?string $day = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $middayOpen = null;
+    private ?DateTimeInterface $middayOpen = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $middayClose = null;
+    private ?DateTimeInterface $middayClose = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $eveningOpen = null;
+    private ?DateTimeInterface $eveningOpen = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $eveningClose = null;
+    private ?DateTimeInterface $eveningClose = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $closed = false;
@@ -49,48 +50,48 @@ class OpeningHours
         return $this;
     }
 
-    public function getMiddayOpen(): ?\DateTimeInterface
+    public function getMiddayOpen(): ?DateTimeInterface
     {
         return $this->middayOpen;
     }
 
-    public function setMiddayOpen(?\DateTimeInterface $middayOpen): self
+    public function setMiddayOpen(?DateTimeInterface $middayOpen): self
     {
         $this->middayOpen = $middayOpen;
 
         return $this;
     }
 
-    public function getMiddayClose(): ?\DateTimeInterface
+    public function getMiddayClose(): ?DateTimeInterface
     {
         return $this->middayClose;
     }
 
-    public function setMiddayClose(?\DateTimeInterface $middayClose): self
+    public function setMiddayClose(?DateTimeInterface $middayClose): self
     {
         $this->middayClose = $middayClose;
 
         return $this;
     }
 
-    public function getEveningOpen(): ?\DateTimeInterface
+    public function getEveningOpen(): ?DateTimeInterface
     {
         return $this->eveningOpen;
     }
 
-    public function setEveningOpen(?\DateTimeInterface $eveningOpen): self
+    public function setEveningOpen(?DateTimeInterface $eveningOpen): self
     {
         $this->eveningOpen = $eveningOpen;
 
         return $this;
     }
 
-    public function getEveningClose(): ?\DateTimeInterface
+    public function getEveningClose(): ?DateTimeInterface
     {
         return $this->eveningClose;
     }
 
-    public function setEveningClose(?\DateTimeInterface $eveningClose): self
+    public function setEveningClose(?DateTimeInterface $eveningClose): self
     {
         $this->eveningClose = $eveningClose;
 

@@ -7,9 +7,10 @@
         <h1 class="underline-title">Toutes les réservations</h1>
     </div>
     <div class="table-responsive" style="display: flex; justify-content: center; ">
-        <table class="table table-bordered table-striped w-50 text-center" >
+        <table class="table table-bordered table-striped w-50 text-center">
             <thead class="thead-dark">
             <tr>
+                <th><label for="select-all"></label><input type="checkbox" id="select-all"/></th>
                 <th>Date</th>
                 <th>Heure</th>
                 <th>Nb de couverts</th>
@@ -19,20 +20,55 @@
             <tbody>
             {% for reservation in reservations %}
                 <tr>
+                    <label for="reservation-{{ reservation.id }}"></label>
+                    <td><input type="checkbox" class="select-reservation" name="reservations[]"
+                               value="{{ reservation.id }}" id="reservation-{{ reservation.id }}"/></td>
                     <td>{{ reservation.date | date('Y-m-d') }}</td>
-                    <td>{{ reservation.heure | date('H:i') }}</td>
+                    <td>{{ reservation.date | date('H:i') }}</td>
                     <td>{{ reservation.nbCouverts }}</td>
                     <td>{{ reservation.allergies }}</td>
-                    <td>
-                        <form action="{{ path('reservation_delete', {'id': reservation.id}) }}" method="POST"
-                              onsubmit="return confirm('Are you sure you want to delete this reservation?')">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    <div class="text-center mt-5">
+        <button id="delete-selected" class="btn btn-danger">Supprimer les sélectionnés</button>
+    </div>
+    {% block javascripts %}
+        <script>
+            const selectAllCheckbox = document.getElementById('select-all');
+            const selectReservationCheckboxes = document.getElementsByClassName('select-reservation');
+
+            selectAllCheckbox.addEventListener('change', function () {
+                for (let checkbox of selectReservationCheckboxes) {
+                    checkbox.checked = this.checked;
+                }
+            });
+
+            const deleteSelectedButton = document.getElementById('delete-selected');
+
+            deleteSelectedButton.addEventListener('click', function () {
+                const selectedReservationIds = Array.from(selectReservationCheckboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+
+                fetch("{{ path('reservation_delete') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        reservations: selectedReservationIds,
+                    }),
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Error:', response.status);
+                    } else {
+                        location.reload();
+                    }
+                });
+            });
+        </script>
+    {% endblock %}
 {% endblock %}
