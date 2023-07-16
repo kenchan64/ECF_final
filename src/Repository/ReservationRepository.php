@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Reservation;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -31,22 +33,25 @@ class ReservationRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws NonUniqueResultException
+     * @throws NonUniqueResultException|NoResultException
      */
-    public function findReservationIdByCriteria(int $nbCouverts, \DateTimeInterface $heure, \DateTimeInterface $date): ?int
+    public function findTotalSeatsReservedByCriteria(DateTimeInterface $datetime): ?int
     {
+        $from = clone $datetime;
+        $from->setTime((int)$datetime->format('H'), (int)$datetime->format('i'));
+
+        $to = clone $datetime;
+        $to->setTime((int)$datetime->format('H') + 1, (int)$datetime->format('i')); // Assuming each reservation lasts 1 hour
+
         $qb = $this->createQueryBuilder('r');
-        $qb->select('r.id')
-            ->where('r.nbCouverts = :nbCouverts')
-            ->andWhere('r.heure = :heure')
-            ->andWhere('r.date = :date')
-            ->setParameter('nbCouverts', $nbCouverts)
-            ->setParameter('heure', $heure)
-            ->setParameter('date', $date)
-            ->setMaxResults(1);
+        $qb->select('SUM(r.nbCouverts)')
+            ->where('r.date >= :from')
+            ->andWhere('r.date < :to')
+            ->setParameters(['from' => $from, 'to' => $to]);
 
-        $result = $qb->getQuery()->getOneOrNullResult();
 
-        return $result !== null ? $result['id'] : null;
+        $result = $qb->getQuery()->getSingleScalarResult();
+
+        return $result !== null ? (int)$result : 0;
     }
 }
