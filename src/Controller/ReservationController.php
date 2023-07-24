@@ -37,12 +37,16 @@ class ReservationController extends AbstractController
     {
         $reservations = $this->reservationRepository->findAll();
         $openingHours = $this->openingHoursRepository->findAll();
-        $reservationId = $reservations[0]->getId();
+        $reservationId = null;
+        $reservation = $this->reservationRepository->findAll();
+        if (!empty($reservation)) {
+            $reservationId = $reservation[0]->getId();
+        }
 
         return $this->render('reservation/reservations/show.html.twig', [
             'reservations' => $reservations,
             'openingHours' => $openingHours,
-            'reservationId' => $reservationId,
+            'reservationId' => $reservationId ?? null,
         ]);
     }
 
