@@ -33,21 +33,54 @@
             </button>
         </div>
         {{ form_end(form) }}
+        <p id="available_seats"></p>
     </div>
     {% block scripts %}
         <script>
             const form = document.getElementById('my-form');
+            const availableSeats = document.getElementById('available_seats');
 
-            form.addEventListener('submit', function (event) {
+            const nbCouvertsInput = document.getElementById('reservation_nbCouverts');
+            const dateInput = document.getElementById('reservation_date_date');
+            const hourInput = document.getElementById('reservation_date_time_hour');
+            const minuteInput = document.getElementById('reservation_date_time_minute');
 
-                const nbCouverts = document.getElementById('reservation_nbCouverts').value;
-                const date = document.getElementById('reservation_date').value;
+            nbCouvertsInput.addEventListener('change', updateAvailableSeats);
+            dateInput.addEventListener('change', updateAvailableSeats);
+            hourInput.addEventListener('change', updateAvailableSeats);
+            minuteInput.addEventListener('change', updateAvailableSeats);
 
-                if (date === '' || nbCouverts === '') {
-                    event.preventDefault();
-                    document.getElementById('reservation_button').disabled = true;
+            async function updateAvailableSeats() {
+                const nbCouvertsValue = nbCouvertsInput.value;
+                const dateValue = dateInput.value;
+                const hourValue = hourInput.value;
+                const minuteValue = minuteInput.value;
+                const dateTimeValue = dateValue + ' ' + hourValue + ':' + minuteValue;
+
+                if (dateTimeValue === '' || nbCouvertsValue === '') {
+                    availableSeats.textContent = '';
+                    return;
                 }
-            });
+
+                const response = await fetch('/reservation/seats', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nbCouverts: nbCouvertsValue,
+                        date: dateTimeValue
+                    }),
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    console.error('Error:', data.error);
+                } else {
+                    const totalSeats = data.totalSeats;
+                    availableSeats.textContent = `${data.availableSeats} places disponibles sur ${totalSeats}`;
+                }
+            }
         </script>
     {% endblock %}
 {% endblock %}

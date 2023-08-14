@@ -21,3 +21,8 @@ app_register:
     path: '/register'
     controller: App\Controller\RegistrationController::register
     methods: [ 'GET', 'POST' ]
+
+app_reservation_seats:
+    path: '/reservation/seats'
+    controller: App\Controller\ReservationController::getAvailableSeats
+    methods: [ 'POST' ]

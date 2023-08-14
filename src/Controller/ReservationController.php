@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ReservationController extends AbstractController
 {
@@ -89,6 +90,25 @@ class ReservationController extends AbstractController
             'openingHours' => $openingHours,
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/reservation/seats', name: 'app_reservation_seats', methods: ['POST'])]
+    public function getAvailableSeats(Request $request): JsonResponse
+    {
+        if ($request->isMethod('POST')) {
+            $data = json_decode($request->getContent(), true);
+            $date = new \DateTime($data['date']);
+            $timeSlot = clone $date;
+            $nbCouverts = $data['nbCouverts'];
+
+            $totalReservedSeats = $this->reservationRepository->findTotalSeatsReservedByCriteria($timeSlot, $nbCouverts);
+            $restaurantSettings = $this->restaurantSettingsRepository->getRestaurantSettings();
+            $totalSeats = $restaurantSettings ? $restaurantSettings->getMaxGuests() : 0;
+            $availableSeats = $totalSeats - $totalReservedSeats;
+
+        return new JsonResponse(['availableSeats' => $availableSeats, 'totalSeats' => $totalSeats]);
+    }
+        return new JsonResponse('Invalid request', 400);
     }
 
     #[Route('/reservation/delete', name: 'reservation_delete', methods: ['POST'])]
